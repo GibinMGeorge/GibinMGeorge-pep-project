@@ -2,13 +2,25 @@ package Controller;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import Model.Account;
+import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
+
+import java.util.List;
 
 public class SocialMediaController {
-    
+    private AccountService accountService;
+    private MessageService messageService;
+
+    public SocialMediaController() {
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
+
     public Javalin startAPI() {
         Javalin app = Javalin.create();
 
-        // Define endpoints here
         app.post("/register", this::handleUserRegistration);
         app.post("/login", this::handleUserLogin);
         app.post("/messages", this::handleCreateMessage);
@@ -21,38 +33,96 @@ public class SocialMediaController {
         return app;
     }
 
-    private void handleUserRegistration(Context context) {
-        // Call Service layer to handle registration
-        // Validate input and create a new user if valid
+    private void handleUserRegistration(Context ctx) {
+        Account account = ctx.bodyAsClass(Account.class);
+        if (account.getUsername() == null || account.getUsername().isEmpty() ||
+            account.getPassword() == null || account.getPassword().length() <= 4) {
+            ctx.status(400).json("Invalid account details.");
+            return;
+        }
+
+        Account createdAccount = accountService.createAccount(account);
+        if (createdAccount != null) {
+            ctx.status(201).json(createdAccount);
+        } else {
+            ctx.status(500).json("Account registration failed.");
+        }
     }
 
-    private void handleUserLogin(Context context) {
-        // Call Service layer to handle login
-        // Check username and password against database
+    private void handleUserLogin(Context ctx) {
+        Account account = ctx.bodyAsClass(Account.class);
+        boolean isLoggedIn = accountService.login(account.getUsername(), account.getPassword());
+        if (isLoggedIn) {
+            ctx.status(200).json("Login successful.");
+        } else {
+            ctx.status(401).json("Invalid username or password.");
+        }
     }
 
-    private void handleCreateMessage(Context context) {
-        // Call Service layer to handle new message creation
-        // Validate input and add message to database if valid
+    private void handleCreateMessage(Context ctx) {
+        Message message = ctx.bodyAsClass(Message.class);
+        if (message.getMessage_text() == null || message.getMessage_text().isEmpty() ||
+            message.getMessage_text().length() > 255) {
+            ctx.status(400).json("Invalid message text.");
+            return;
+        }
+
+        Message createdMessage = messageService.createMessage(message);
+        if (createdMessage != null) {
+            ctx.status(201).json(createdMessage);
+        } else {
+            ctx.status(500).json("Message creation failed.");
+        }
     }
 
-    private void handleGetAllMessages(Context context) {
-        // Retrieve all messages from the Service layer
+    private void handleGetAllMessages(Context ctx) {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
     }
 
-    private void handleGetMessageById(Context context) {
-        // Retrieve a specific message by ID from the Service layer
+    private void handleGetMessageById(Context ctx) {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageById(messageId);
+        if (message != null) {
+            ctx.json(message);
+        } else {
+            ctx.status(404).json("Message not found.");
+        }
     }
 
-    private void handleDeleteMessage(Context context) {
-        // Call Service layer to delete a message by ID
+    private void handleDeleteMessage(Context ctx) {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        boolean isDeleted = messageService.deleteMessage(messageId);
+        if (isDeleted) {
+            ctx.status(204); // No content
+        } else {
+            ctx.status(404).json("Message not found.");
+        }
     }
 
-    private void handleUpdateMessageText(Context context) {
-        // Call Service layer to update message text by ID
+    private void handleUpdateMessageText(Context ctx) {
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        String newText = ctx.body();
+        if (newText == null || newText.isEmpty() || newText.length() > 255) {
+            ctx.status(400).json("Invalid message text.");
+            return;
+        }
+
+        Message updatedMessage = messageService.updateMessageText(messageId, newText);
+        if (updatedMessage != null) {
+            ctx.json(updatedMessage);
+        } else {
+            ctx.status(404).json("Message not found.");
+        }
     }
 
-    private void handleGetMessagesByUserId(Context context) {
-        // Retrieve all messages by a specific user ID from the Service layer
+    private void handleGetMessagesByUserId(Context ctx) {
+        int accountId = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> userMessages = messageService.getMessagesByUserId(accountId);
+        if (userMessages != null) {
+            ctx.json(userMessages);
+        } else {
+            ctx.status(404).json("No messages found for this user.");
+        }
     }
 }

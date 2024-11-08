@@ -1,5 +1,62 @@
 package Service;
 
+import Model.Account;
+import DAO.AccountDAO;
+
+import java.util.List;
+
+/**
+ * The AccountService class handles business logic related to accounts, 
+ * sitting between the controller and persistence layer (DAO).
+ */
 public class AccountService {
-    
+    private AccountDAO accountDAO;
+
+    /**
+     * No-args constructor for creating a new AccountService with a new AccountDAO.
+     */
+    public AccountService() {
+        this.accountDAO = new AccountDAO();
+    }
+
+    /**
+     * Constructor for AccountService when an AccountDAO is provided.
+     * Used in testing with a mock AccountDAO to test AccountService independently.
+     * 
+     * @param accountDAO the AccountDAO to be used by this service
+     */
+    public AccountService(AccountDAO accountDAO) {
+        this.accountDAO = accountDAO;
+    }
+
+    /**
+     * Retrieves all accounts.
+     * 
+     * @return a list of all accounts
+     */
+    public List<Account> getAllAccounts() {
+        return accountDAO.getAllAccounts();
+    }
+
+    /**
+     * Persists a new account. 
+     * 
+     * @param account an Account object to be added
+     * @return the persisted Account if successful, otherwise null
+     */
+    public Account createAccount(Account account) {
+        return accountDAO.insertAccount(account);
+    }
+
+    /**
+     * Authenticates a user based on username and password.
+     * 
+     * @param username the username of the account
+     * @param password the password of the account
+     * @return true if the credentials are valid, false otherwise
+     */
+    public boolean login(String username, String password) {
+        Account account = accountDAO.getAccountByUsername(username);
+        return account != null && account.getPassword().equals(password);
+    }
 }

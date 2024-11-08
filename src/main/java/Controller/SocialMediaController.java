@@ -37,17 +37,20 @@ public class SocialMediaController {
         Account account = ctx.bodyAsClass(Account.class);
         if (account.getUsername() == null || account.getUsername().isEmpty() ||
             account.getPassword() == null || account.getPassword().length() <= 4) {
-            ctx.status(400).json("Invalid account details.");
+            ctx.status(400).json("");
             return;
         }
-
+    
+        // Check for duplicate username
         Account createdAccount = accountService.createAccount(account);
-        if (createdAccount != null) {
-            ctx.status(201).json(createdAccount);
-        } else {
-            ctx.status(500).json("Account registration failed.");
+        if (createdAccount == null) {
+            ctx.status(400).json("");
+            return;
         }
+    
+        ctx.status(200).json(createdAccount); // Successfully created account
     }
+    
 
     private void handleUserLogin(Context ctx) {
         Account account = ctx.bodyAsClass(Account.class);

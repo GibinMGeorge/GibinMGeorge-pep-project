@@ -45,8 +45,14 @@ public class AccountService {
      * @return the persisted Account if successful, otherwise null
      */
     public Account createAccount(Account account) {
-        return accountDAO.insertAccount(account);
+        // Check if the username already exists
+        Account existingAccount = accountDAO.getAccountByUsername(account.getUsername());
+        if (existingAccount != null) {
+            return null; // Return null if the username is already taken
+        }
+        return accountDAO.insertAccount(account); // Insert new account if username is unique
     }
+    
 
     /**
      * Authenticates a user based on username and password.

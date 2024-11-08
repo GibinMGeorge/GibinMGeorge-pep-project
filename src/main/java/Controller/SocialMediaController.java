@@ -58,7 +58,7 @@ public class SocialMediaController {
         if (isLoggedIn) {
             ctx.status(200).json("Login successful.");
         } else {
-            ctx.status(401).json("Invalid username or password.");
+            ctx.status(401).json("");
         }
     }
 

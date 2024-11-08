@@ -62,7 +62,17 @@ public class AccountService {
      * @return true if the credentials are valid, false otherwise
      */
     public boolean login(String username, String password) {
+        if (username == null || password == null) {
+            return false;
+        }
+    
         Account account = accountDAO.getAccountByUsername(username);
-        return account != null && account.getPassword().equals(password);
+        if (account == null) {
+            return false; // Username not found
+        }
+    
+        // Password comparison
+        return password.equals(account.getPassword());
     }
+    
 }

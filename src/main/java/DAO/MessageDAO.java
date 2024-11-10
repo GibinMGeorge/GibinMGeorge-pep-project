@@ -81,7 +81,7 @@ public class MessageDAO {
     public Message getMessageById(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "SELECT * FROM message WHERE id = ?";
+            String sql = "SELECT * FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messageId);
             ResultSet rs = preparedStatement.executeQuery();
@@ -135,7 +135,7 @@ public class MessageDAO {
     public boolean deleteMessage(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "DELETE FROM message WHERE id = ?";
+            String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messageId);
 

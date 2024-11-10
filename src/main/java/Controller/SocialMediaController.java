@@ -72,9 +72,9 @@ public class SocialMediaController {
 
         Message createdMessage = messageService.createMessage(message);
         if (createdMessage != null) {
-            ctx.status(201).json(createdMessage);
+            ctx.status(200).json(createdMessage);
         } else {
-            ctx.status(500).json("");
+            ctx.status(400).json("");
         }
     }
 

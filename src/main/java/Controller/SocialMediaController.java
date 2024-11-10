@@ -66,7 +66,7 @@ public class SocialMediaController {
         Message message = ctx.bodyAsClass(Message.class);
         if (message.getMessage_text() == null || message.getMessage_text().isEmpty() ||
             message.getMessage_text().length() > 255) {
-            ctx.status(400).json("Invalid message text.");
+            ctx.status(400).json("");
             return;
         }
 
@@ -74,7 +74,7 @@ public class SocialMediaController {
         if (createdMessage != null) {
             ctx.status(201).json(createdMessage);
         } else {
-            ctx.status(500).json("Message creation failed.");
+            ctx.status(500).json("");
         }
     }
 

@@ -56,7 +56,7 @@ public class SocialMediaController {
         Account account = ctx.bodyAsClass(Account.class);
         boolean isLoggedIn = accountService.login(account.getUsername(), account.getPassword());
         if (isLoggedIn) {
-            ctx.status(200).json("Login successful.");
+            ctx.status(200).json(account);
         } else {
             ctx.status(401).json("");
         }

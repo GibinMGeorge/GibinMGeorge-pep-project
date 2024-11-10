@@ -138,14 +138,16 @@ public class MessageDAO {
             String sql = "DELETE FROM message WHERE message_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, messageId);
-
             int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
+            // Return true even if no rows were affected (indicating no-op)
+            return rowsAffected >= 0;  // or rowsAffected == 0
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return false;
         }
-        return false;
     }
+    
+    
 
     /**
      * Retrieves all messages for a specific account.

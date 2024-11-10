@@ -89,7 +89,7 @@ public class SocialMediaController {
         if (message != null) {
             ctx.json(message);
         } else {
-            ctx.status(404).json("Message not found.");
+            ctx.status(200).json("");
         }
     }
 

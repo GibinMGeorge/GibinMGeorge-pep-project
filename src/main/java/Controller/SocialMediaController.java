@@ -98,9 +98,9 @@ public class SocialMediaController {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
         boolean isDeleted = messageService.deleteMessage(messageId);
         if (isDeleted) {
-            ctx.status(200); // No content
+            ctx.status(204); // No content
         } else {
-            ctx.status(404).json("Message not found.");
+            ctx.status(404).json("");
         }
     }
 

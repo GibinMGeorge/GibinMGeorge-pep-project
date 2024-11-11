@@ -8,6 +8,7 @@ import Service.AccountService;
 import Service.MessageService;
 
 import java.util.List;
+import java.util.Map;
 
 public class SocialMediaController {
     private AccountService accountService;
@@ -105,9 +106,12 @@ public class SocialMediaController {
 
     private void handleUpdateMessageText(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
-        String newText = ctx.body();
+        // Parse the JSON body as a Map and get the "message_text" field
+        @SuppressWarnings("unchecked")
+        Map<String, String> body = ctx.bodyAsClass(Map.class);
+        String newText = body.get("message_text");
         if (newText == null || newText.isEmpty() || newText.length() > 255) {
-            ctx.status(400).json("Invalid message text.");
+            ctx.status(400).json("");
             return;
         }
 
@@ -115,7 +119,7 @@ public class SocialMediaController {
         if (updatedMessage != null) {
             ctx.json(updatedMessage);
         } else {
-            ctx.status(404).json("Message not found.");
+            ctx.status(400).json("");
         }
     }
 

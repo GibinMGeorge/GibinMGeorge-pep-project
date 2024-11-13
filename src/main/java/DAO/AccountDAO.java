@@ -29,7 +29,7 @@ public class AccountDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Account account = new Account(rs.getInt("id"), 
+                Account account = new Account(rs.getInt("account_id"), 
                 rs.getString("username"), 
                 rs.getString("password"));
                 accounts.add(account);
@@ -59,7 +59,7 @@ public class AccountDAO {
             preparedStatement.executeUpdate();
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if (pkeyResultSet.next()) {
-                int generated_account_id = pkeyResultSet.getInt(1);
+                int generated_account_id = (int)pkeyResultSet.getLong(1);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
         } catch (SQLException e) {
@@ -74,14 +74,15 @@ public class AccountDAO {
      * @param username the username of the account.
      * @return the Account object if found, otherwise null.
      */
-    public Account getAccountByUsername(String username) {
+    public Account getAccountByUsername(String account) {
         Connection connection = ConnectionUtil.getConnection();
         System.out.println("Database Connection: " + connection);
         try {
-            System.out.println("Executing SQL query to fetch account: " + username);
+            // System.out.println("Executing SQL query to fetch account: " + account.getUsername());
             String sql = "SELECT * FROM account WHERE username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, account);
+            // preparedStatement.setString(2, account.getPassword());
             ResultSet rs = preparedStatement.executeQuery();
             
             if (rs.next()) {

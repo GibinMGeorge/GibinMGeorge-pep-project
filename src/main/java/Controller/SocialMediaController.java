@@ -55,11 +55,11 @@ public class SocialMediaController {
 
     private void handleUserLogin(Context ctx) {
         Account account = ctx.bodyAsClass(Account.class);
-        boolean isLoggedIn = accountService.login(account.getUsername(), account.getPassword());
-        if (isLoggedIn) {
-            ctx.status(200).json(account);
+        Account isLoggedIn = accountService.login(account.getUsername());
+        if (isLoggedIn == null || !isLoggedIn.getPassword().equals(account.getPassword())) {
+            ctx.status(401);
         } else {
-            ctx.status(401).json("");
+            ctx.status(200).json(isLoggedIn);
         }
     }
 

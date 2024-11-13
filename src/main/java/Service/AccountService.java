@@ -46,10 +46,10 @@ public class AccountService {
      */
     public Account createAccount(Account account) {
         // Check if the username already exists
-        Account existingAccount = accountDAO.getAccountByUsername(account.getUsername());
-        if (existingAccount != null) {
-            return null; // Return null if the username is already taken
-        }
+        // Account existingAccount = accountDAO.getAccountByUsername(account);
+        // if (existingAccount != null) {
+        //     return null; // Return null if the username is already taken
+        // }
         return accountDAO.insertAccount(account); // Insert new account if username is unique
     }
     
@@ -61,15 +61,15 @@ public class AccountService {
      * @param password the password of the account
      * @return true if the credentials are valid, false otherwise
      */
-    public boolean login(String username, String password) {
+    public Account login(String username) {
         System.out.println("Attempting login for username: " + username);
         Account account = accountDAO.getAccountByUsername(username);
-        if (account == null) {
-            System.out.println("No account found with username: " + username);
-            return false;
-        }
-        System.out.println("Account found: " + account.getUsername() + ", Password Match: " + password.equals(account.getPassword()));
-        return password.equals(account.getPassword());
+        // if (account == null) {
+        //     System.out.println("No account found with username: " + username);
+        //     return null;
+        // }
+        // System.out.println("Account found: " + account.getUsername() + ", Password Match: " + password.equals(account.getPassword()));
+        return account;
     }
     
     

@@ -106,7 +106,7 @@ public class SocialMediaController {
             // Return JSON representation of the deleted message if it was found and deleted
             ctx.status(200).json(message.get());
         } else {
-            // Return 200 with an empty body if the message was not found
+            // Return 200 with an empty body if the message was not found.
             ctx.status(200).result("");
         }
     }

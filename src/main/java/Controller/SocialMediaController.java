@@ -9,6 +9,7 @@ import Service.MessageService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SocialMediaController {
     private AccountService accountService;
@@ -86,23 +87,30 @@ public class SocialMediaController {
 
     private void handleGetMessageById(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
-        Message message = messageService.getMessageById(messageId);
-        if (message != null) {
-            ctx.json(message);
+        Optional<Message> message = messageService.getMessageById(messageId);
+    
+        if (message.isPresent()) {
+            ctx.status(200).json(message.get());
         } else {
-            ctx.status(200).json("");
+            ctx.status(200).json(""); 
         }
     }
+    
 
     private void handleDeleteMessage(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Optional<Message> message = messageService.getMessageById(messageId); // Fetch the message first
         boolean isDeleted = messageService.deleteMessage(messageId);
-        if (isDeleted) {
-            ctx.status(200); // No content
+    
+        if (isDeleted && message.isPresent()) {
+            // Return JSON representation of the deleted message if it was found and deleted
+            ctx.status(200).json(message.get());
         } else {
-            ctx.status(404).json("");
+            // Return 200 with an empty body if the message was not found
+            ctx.status(200).result("");
         }
     }
+    
 
     private void handleUpdateMessageText(Context ctx) {
         int messageId = Integer.parseInt(ctx.pathParam("message_id"));

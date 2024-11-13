@@ -4,6 +4,7 @@ import Model.Message;
 import DAO.MessageDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The MessageService class handles business logic related to messages, 
@@ -52,9 +53,9 @@ public class MessageService {
      * Retrieves a message by its ID.
      * 
      * @param messageId the ID of the message
-     * @return the Message object if found, otherwise null
+     * @return an Optional containing the Message if found, otherwise an empty Optional
      */
-    public Message getMessageById(int messageId) {
+    public Optional<Message> getMessageById(int messageId) {
         return messageDAO.getMessageById(messageId);
     }
 
